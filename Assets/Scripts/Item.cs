@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public enum ITEM_TYPE {NORMAL, DOUBLE_JUMP, GROUND_POUND, DASH, KEY};
+    public enum ITEM_TYPE {DANGO, DOUBLE_JUMP, 
+    GROUND_POUND, DASH, RED_KEY, BLUE_KEY, GREEN_KEY};
 
-    public ITEM_TYPE type = ITEM_TYPE.NORMAL;
+    public ITEM_TYPE type = ITEM_TYPE.DANGO;
+    public float floatStrength = 1;
+
+    private Animator _animation;
+
+    private float originalY;
 
     void OnTriggerEnter2D (Collider2D collider)
     {
@@ -35,12 +41,14 @@ public class Item : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        _animation = GetComponent<Animator>();
+        this.originalY = this.transform.position.y;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        transform.position = new Vector2(transform.position.x, originalY 
+        + ((float)Mathf.Sin(Time.time) * floatStrength));
     }
 }

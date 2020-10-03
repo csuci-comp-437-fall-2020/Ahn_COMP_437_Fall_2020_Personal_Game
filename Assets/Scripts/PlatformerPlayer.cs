@@ -67,7 +67,7 @@ public class PlatformerPlayer : MonoBehaviour
         _animation.SetBool("jumping", false);
         _animation.SetBool("groundPounding", false);
         
-        if(hit != null)
+        if(hit != null && hit.name == "Floor")
         {
             grounded = true;
             jumping = false;
