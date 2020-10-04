@@ -50,7 +50,7 @@ public class PlatformerPlayer : MonoBehaviour
     {
         //moving stuff
         float deltaX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        Vector2 movement = new Vector2(deltaX * 2, _body.velocity.y);
+        Vector2 movement = new Vector2(deltaX, _body.velocity.y);
         _body.velocity = movement;
 
         Vector3 max = _box.bounds.max;
@@ -67,7 +67,7 @@ public class PlatformerPlayer : MonoBehaviour
         _animation.SetBool("jumping", false);
         _animation.SetBool("groundPounding", false);
         
-        if(hit != null && hit.name == "Floor")
+        if(hit != null && hit.tag == "ground")
         {
             grounded = true;
             jumping = false;
