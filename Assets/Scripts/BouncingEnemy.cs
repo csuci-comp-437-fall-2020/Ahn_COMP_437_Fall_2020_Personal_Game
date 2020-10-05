@@ -14,10 +14,7 @@ public class BouncingEnemy : MonoBehaviour
     private SpriteRenderer _sprite;
 
     private Vector3 _startPosition;
-    private float _trackPercent = 0;
     private int _direction = 1;
-
-    private bool bounce = false;
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +33,6 @@ public class BouncingEnemy : MonoBehaviour
         if(other.tag == "ground")
         {
             _body.velocity = Vector2.zero;
-            bounce = true;
             if(_direction == 1)
             {
                 _sprite.flipX = true;
@@ -48,9 +44,26 @@ public class BouncingEnemy : MonoBehaviour
             _body.AddForce(new Vector2(moveSpeed * _direction, bounceSpeed), ForceMode2D.Impulse);
         }
 
-        if (other.tag == "Player")
+        if(other.tag == "Player")
         {
-            Destroy(gameObject);
+            other.GetComponent<Health>().health--;
+            
+            //knockback code from:
+            //https://www.youtube.com/watch?v=sdGeGQPPW7E
+            PlatformerPlayer player = other.GetComponent<PlatformerPlayer>();
+            player.knockbackCount = player.knockbackMaxTime;
+
+            if(other.transform.position.x < transform.position.x)
+            {
+                player.knockFromRight = true;
+            }
+            else
+            {
+                player.knockFromRight = false;
+            }
+
+            _direction *= -1;
+            _body.velocity = new Vector2(moveSpeed * _direction, _body.velocity.y); 
         }
 
     }
