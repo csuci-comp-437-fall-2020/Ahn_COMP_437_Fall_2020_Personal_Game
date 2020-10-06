@@ -5,13 +5,13 @@ using UnityEngine;
 public class FollowCam : MonoBehaviour
 {
     public Transform target;
-    public float smoothTime = 0.2f;
+    public float smoothTime = 0.1f;
 
     private Vector3 _velocity = Vector3.zero;
-    private float _minimumX = 1.38f;
-    private float _maximumX = 100f;
-    private float _minimumY = -15f;
-    private float _maximumY = 15f;
+    private float _minimumX = 0f;
+    private float _maximumX = 133f;
+    private float _minimumY = -82.6f;
+    private float _maximumY = 75.3f;
     
     void LateUpdate()
     {

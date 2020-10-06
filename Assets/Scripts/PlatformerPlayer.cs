@@ -2,27 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlatformerPlayer : MonoBehaviour
 {
     public float speed = 300.0f;
     public float jumpForce = 5.0f;
+    public float doubleJumpForce = 8.0f;
     public float poundForce = 15.0f;
     public float dashSpeed = 600.0f;
 
+    [SerializeField] private Text dangoCounter;
+    [SerializeField] private Image[] keyInventory;
     public int collectables = 0;
+    private const int MAX_COLLECTABLES = 999;
     public bool canDash = false;
     public bool canDoubleJump = false;
     public bool canGroundPound = false;
+    public bool hasRedKey = false;
+    public bool hasGreenKey = false;
+    public bool hasBlueKey = false;
 
     private Rigidbody2D _body;
     private Animator _animation;
     private BoxCollider2D _box;
-    private Health _health;
+    public Health _health;
     private SpriteRenderer _sprite;
-
-    private float deathBound = -15f;
-    
+ 
     private int jumpCount = 0;
     private const int MAX_EXTRA_JUMP = 1;
     private const float MAX_FALL_VELOCITY = 15.0f;
@@ -59,6 +65,10 @@ public class PlatformerPlayer : MonoBehaviour
 
         dashTime = startDashTime;
         _animation.SetBool("dashing", false);
+        for(int i = 0; i < keyInventory.Length; i++)
+        {
+            keyInventory[i].enabled = false;
+        }
     }
 
     // Update is called once per frame
@@ -114,7 +124,7 @@ public class PlatformerPlayer : MonoBehaviour
             Input.GetKeyDown(KeyCode.UpArrow) && jumpCount < MAX_EXTRA_JUMP)
             {
                 jumpCount++;
-                _body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                _body.AddForce(Vector2.up * doubleJumpForce, ForceMode2D.Impulse);
             }
 
             //GroudPounding
@@ -221,16 +231,30 @@ public class PlatformerPlayer : MonoBehaviour
         {
             transform.localScale = new Vector3(Mathf.Sign(deltaX) / pScale.x, 1/pScale.y, 1);
         }
-        /*
-        if(!Mathf.Approximately(deltaX, 0))
+
+        //Counting Collectibles
+        if(collectables > MAX_COLLECTABLES)
         {
-            transform.localScale = new Vector3(Mathf.Sign(deltaX), 1, 1);
+            collectables = MAX_COLLECTABLES;
         }
-        */
+        dangoCounter.text = "x " + collectables;
+        if(hasRedKey)
+        {
+            keyInventory[0].enabled = true;
+        }
+        if(hasBlueKey)
+        {
+            keyInventory[1].enabled = true;
+        }
+        if(hasGreenKey)
+        {
+            keyInventory[2].enabled = true;
+        }
     }
 
-    //Invulnerable Frames from:
-    //https://www.youtube.com/watch?v=S61J3kDQ5Mk
+    //Invulnerable Frames referrenced from:
+    //https://www.youtube.com/watch?v=phZRfEAuW7Q
+    //I ended up just borrowing the Coroutine idea
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.layer == ENEMY_LAYER && _health.health > 0)

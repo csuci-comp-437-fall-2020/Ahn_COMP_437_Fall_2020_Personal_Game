@@ -16,6 +16,10 @@ public class BouncingEnemy : MonoBehaviour
     private Vector3 _startPosition;
     private int _direction = 1;
 
+    [Header ("Item Drop")]
+    public GameObject[] droppableItems;
+    private float originalY;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +28,7 @@ public class BouncingEnemy : MonoBehaviour
         _sprite = GetComponent<SpriteRenderer>();
         _startPosition = transform.position;
         _sprite.flipX = false;
+        originalY = transform.position.y;
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -80,13 +85,28 @@ public class BouncingEnemy : MonoBehaviour
         {
             _direction = 1;
         }
-        if(_body.velocity.y <= -4.5)
+        if(_body.velocity.y <= -4.3)
         {
             _animation.SetBool("grounded", true);
         }
         else
         {
             _animation.SetBool("grounded", false);
+        }
+    }
+
+    void OnDestroy()
+    {
+        int numOfDrop = Random.Range(1, 6);
+        for(int i = 0; i < numOfDrop; i++)
+        {
+            int whichItem = Random.Range(0, droppableItems.Length);
+            float dropRate = Random.Range(0f, 1f);
+            if(dropRate >= 0.5f)
+            {
+                Vector3 itemSpawnPoint = new Vector3(transform.position.x, originalY, transform.position.z);
+                Instantiate(droppableItems[whichItem], itemSpawnPoint, transform.rotation);
+            }
         }
     }
 }

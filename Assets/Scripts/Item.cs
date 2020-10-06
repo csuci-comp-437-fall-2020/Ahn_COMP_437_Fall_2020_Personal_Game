@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public enum ITEM_TYPE {DANGO, DOUBLE_JUMP, 
+    public enum ITEM_TYPE {DANGO, HEALTH, DOUBLE_JUMP, 
     GROUND_POUND, DASH, RED_KEY, BLUE_KEY, GREEN_KEY};
 
     public ITEM_TYPE type = ITEM_TYPE.DANGO;
@@ -20,9 +20,14 @@ public class Item : MonoBehaviour
 
         if (player != null)
         {
-            player.collectables += 1;
             switch(type)
             {
+                case ITEM_TYPE.DANGO:
+                    player.collectables++;
+                    break;
+                case ITEM_TYPE.HEALTH:
+                    player._health.health++;
+                    break;
                 case ITEM_TYPE.DOUBLE_JUMP:
                     player.canDoubleJump = true;
                     break;
@@ -32,7 +37,14 @@ public class Item : MonoBehaviour
                 case ITEM_TYPE.DASH:
                     player.canDash = true;
                     break;
-                case 0:
+                case ITEM_TYPE.RED_KEY:
+                    player.hasRedKey = true;
+                    break;
+                case ITEM_TYPE.GREEN_KEY:
+                    player.hasGreenKey = true;
+                    break;
+                case ITEM_TYPE.BLUE_KEY:
+                    player.hasBlueKey = true;
                     break;
             }
             Destroy(gameObject);
@@ -48,7 +60,11 @@ public class Item : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector2(transform.position.x, originalY 
-        + ((float)Mathf.Sin(Time.time) * floatStrength));
+        if(type != ITEM_TYPE.DANGO && type != ITEM_TYPE.HEALTH)
+        {
+            transform.position = new Vector2(transform.position.x, originalY 
+                + ((float)Mathf.Sin(Time.time) * floatStrength));
+        }
+       
     }
 }
