@@ -28,9 +28,13 @@ public class PlatformerPlayer : MonoBehaviour
     private BoxCollider2D _box;
     public Health _health;
     private SpriteRenderer _sprite;
+    public Transform _groundDetector;
+    public Transform attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayer;
  
     private int jumpCount = 0;
-    private const int MAX_EXTRA_JUMP = 1;
+    private const int MAX_EXTRA_JUMP = 2;
     private const float MAX_FALL_VELOCITY = 15.0f;
 
     public bool groundPounding = false;
@@ -75,12 +79,16 @@ public class PlatformerPlayer : MonoBehaviour
     void Update()
     {
         float deltaX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-
+/*
         Vector3 max = _box.bounds.max;
         Vector3 min = _box.bounds.min;
         Vector2 corner1 = new Vector2(max.x, min.y - .1f);
         Vector2 corner2 = new Vector2(min.x, min.y - .2f);
         Collider2D hit = Physics2D.OverlapArea(corner1, corner2);
+        */
+        float originX = _groundDetector.transform.position.x;
+        float originY = _groundDetector.transform.position.y;
+        RaycastHit2D ground = Physics2D.Raycast(new Vector2(originX,originY), -Vector2.up, 0.1f);
 
         if(knockbackCount <= 0)
         {
@@ -96,7 +104,7 @@ public class PlatformerPlayer : MonoBehaviour
             _animation.SetBool("jumping", false);
             _animation.SetBool("groundPounding", false);
             
-            if(hit != null && hit.tag == "ground")
+            if(ground.collider != null && ground.collider.tag == "ground")
             {
                 grounded = true;
                 jumping = false;
@@ -137,6 +145,12 @@ public class PlatformerPlayer : MonoBehaviour
             if(groundPounding)
             {
                 _animation.SetBool("groundPounding", true);
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
+                foreach(Collider2D enemy in hitEnemies)
+                {
+                    //Maybe fix this so it feels better to kill?
+                    enemy.gameObject.SetActive(false);
+                }
             }
 
             //Dash stuff
@@ -206,9 +220,9 @@ public class PlatformerPlayer : MonoBehaviour
 
 
         MovingPlatform platform = null;
-        if(hit != null)
+        if(ground.collider != null)
         {
-            platform = hit.GetComponent<MovingPlatform>();
+            platform = ground.collider.GetComponent<MovingPlatform>();
         }
         if(platform != null)
         {
@@ -283,6 +297,16 @@ public class PlatformerPlayer : MonoBehaviour
         if(_health.health == 0)
         {
             SceneManager.LoadScene("SampleScene");
+        }
+    }
+
+    private void GroundPound()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
+        foreach(Collider2D enemy in hitEnemies)
+        {
+            //Maybe fix this so it feels better to kill?
+            Destroy(enemy.gameObject);
         }
     }
 

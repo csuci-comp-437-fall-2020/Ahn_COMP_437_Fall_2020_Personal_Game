@@ -19,6 +19,7 @@ public class BouncingEnemy : MonoBehaviour
     [Header ("Item Drop")]
     public GameObject[] droppableItems;
     private float originalY;
+    private bool isQuitting = false;
 
     // Start is called before the first frame update
     void Start()
@@ -95,18 +96,27 @@ public class BouncingEnemy : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    void OnApplicationQuit()
     {
-        int numOfDrop = Random.Range(1, 6);
-        for(int i = 0; i < numOfDrop; i++)
+        isQuitting = true;
+    }
+
+    void OnDisable()
+    {
+        if(!isQuitting)
         {
-            int whichItem = Random.Range(0, droppableItems.Length);
-            float dropRate = Random.Range(0f, 1f);
-            if(dropRate >= 0.5f)
+            int numOfDrop = Random.Range(1, 6);
+            for(int i = 0; i < numOfDrop; i++)
             {
-                Vector3 itemSpawnPoint = new Vector3(transform.position.x, originalY, transform.position.z);
-                Instantiate(droppableItems[whichItem], itemSpawnPoint, transform.rotation);
+                int whichItem = Random.Range(0, droppableItems.Length);
+                float dropRate = Random.Range(0f, 1f);
+                if(dropRate >= 0.5f)
+                {
+                    Vector3 itemSpawnPoint = new Vector3(transform.position.x, originalY, transform.position.z);
+                    Instantiate(droppableItems[whichItem], itemSpawnPoint, transform.rotation);
+                }
             }
         }
+        
     }
 }

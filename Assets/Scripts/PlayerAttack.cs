@@ -40,7 +40,7 @@ public class PlayerAttack : MonoBehaviour
         foreach(Collider2D enemy in hitEnemies)
         {
             //Maybe fix this so it feels better to kill?
-            Destroy(enemy.gameObject);
+            enemy.gameObject.SetActive(false);
         }
     }
 
