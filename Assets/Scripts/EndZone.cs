@@ -13,7 +13,7 @@ public class EndZone : MonoBehaviour
         RaycastHit2D player = Physics2D.Raycast(endIndicator.position, Vector2.up, 0.2f);
         if(player.collider != null && player.collider.tag == "Player")
         {
-            SceneManager.LoadScene("SampleScene");
+            Application.Quit();
         }
     }
 }
