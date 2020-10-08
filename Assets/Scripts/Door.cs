@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
-    public enum DOOR_TYPE {RED, BLUE, GREEN};
+    public enum DOOR_TYPE {RED, BLUE, GREEN, GROUND};
     private SpriteRenderer _sprite;
 
     [SerializeField] private Color red;
     [SerializeField] private Color blue;
     [SerializeField] private Color green;
+    [SerializeField] private Color ground;
 
     public DOOR_TYPE doorType;
 
@@ -33,6 +34,11 @@ public class Door : MonoBehaviour
             {
                 Destroy(gameObject);
             }
+
+            if(player.groundPounding && doorType == DOOR_TYPE.GROUND)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -50,6 +56,10 @@ public class Door : MonoBehaviour
         if(doorType == DOOR_TYPE.GREEN)
         {
             _sprite.color = green;
+        }
+        if(doorType == DOOR_TYPE.GROUND)
+        {
+            _sprite.color = ground;
         }
     }
 }

@@ -73,6 +73,7 @@ public class PlatformerPlayer : MonoBehaviour
         {
             keyInventory[i].enabled = false;
         }
+        dashing = false;
     }
 
     // Update is called once per frame
