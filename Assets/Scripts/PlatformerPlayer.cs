@@ -54,6 +54,9 @@ public class PlatformerPlayer : MonoBehaviour
     public float flashDuration = 0.05f;
     public int numOfFlashes = 10;
 
+    public GameObject restartMenu;
+    public Text restartText;
+
 
     // Start is called before the first frame update
     void Start()
@@ -74,6 +77,8 @@ public class PlatformerPlayer : MonoBehaviour
             keyInventory[i].enabled = false;
         }
         dashing = false;
+
+        restartMenu.SetActive(false);
     }
 
     // Update is called once per frame
@@ -297,7 +302,9 @@ public class PlatformerPlayer : MonoBehaviour
     {
         if(_health.health == 0)
         {
-            SceneManager.LoadScene("SampleScene");
+            Time.timeScale = 0;
+            restartText.text = "You Lose!";
+            restartMenu.SetActive(true);
         }
     }
 
@@ -309,6 +316,16 @@ public class PlatformerPlayer : MonoBehaviour
             //Maybe fix this so it feels better to kill?
             Destroy(enemy.gameObject);
         }
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void Exit()
+    {
+        SceneManager.LoadScene("MenuScene");
     }
 
 }
